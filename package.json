@@ -23,9 +23,11 @@
   },
   "scripts": {
     "watch-css": "less-watch-compiler",
-    "start": "npm-run-all -p watch-css start-react",
     "start-react": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "npm-run-all -p watch-css start-react",
+    "build-css": "less-watch-compiler --run-once",
+    "build-react": "react-scripts build",
+    "build": "npm-run-all -p build-css build-react",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
