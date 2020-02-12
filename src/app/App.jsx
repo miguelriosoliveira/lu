@@ -54,6 +54,7 @@ function App() {
       setLoading(false);
     }
 
+    // eslint-disable-next-line
     eval(response.data);
   }
 
