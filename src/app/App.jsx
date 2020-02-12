@@ -59,14 +59,12 @@ function App() {
   }
 
   function renderLocation(address) {
-    // const { iframeKey } = this.state;
     let baseUrl = `https://www.google.com/maps/embed/v1/search?key=${process.env.REACT_APP_GOOGLE_KEY}&q=`;
-    let location = `${address.logradouro}+${address.localidade}`;
+    let location = `${address.logradouro}+${address.localidade}+${address.cep}`;
 
-    if (address.logradouro && address.localidade) {
+    if (address.logradouro && address.localidade && address.cep) {
       return (
         <iframe
-          // key={iframeKey}
           allowFullScreen
           title="map-view"
           frameBorder="0"
