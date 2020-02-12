@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import InputMask from 'react-input-mask';
 
-import CloseIcon from '@material-ui/icons/CloseOutlined';
-
-import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import IconButton from '@material-ui/core/IconButton';
+import Snackbar from '@material-ui/core/Snackbar';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import CloseIcon from '@material-ui/icons/CloseOutlined';
+import Alert from '@material-ui/lab/Alert';
+import axios from 'axios';
 
 import './App.css';
 
@@ -84,29 +87,62 @@ function App() {
     <div className="app-component">
       <section className="search-box">
         <Typography variant="h6">Consultar</Typography>
-        <form
-          className="search"
-          onSubmit={e => {
-            e.preventDefault();
-            console.log('mandou');
-          }}
-        >
-          <InputMask mask="99999-999" value={cep} onChange={e => setCep(e.target.value)}>
+        <form className="search" onSubmit={onSubmit}>
+          <InputMask mask="99999-999" value={cep} onChange={onChange}>
             {() => <TextField autoFocus variant="outlined" label="CEP" placeholder="12345-678" name="cep" />}
           </InputMask>
 
-          <Button type="submit" variant="contained" color="primary">
+          <Button type="submit" variant="contained" color="primary" disabled={loading || !removeMask(cep)}>
             Buscar
           </Button>
         </form>
       </section>
 
-      <section className="map">
-        mapa aqui
-        <IconButton>
-          <CloseIcon />
-        </IconButton>
-      </section>
+      {loading ? (
+        <div className="loading">
+          <CircularProgress />
+        </div>
+      ) : (
+        address.logradouro &&
+        address.localidade && (
+          <section className="map">
+            <div className="upper-part">
+              <div>
+                <Typography variant="h5">{address.logradouro}</Typography>
+                <Typography variant="body1">
+                  {address.bairro}
+                  <br />
+                  {address.localidade} - {address.uf}
+                  <br />
+                  {address.cep}
+                </Typography>
+              </div>
+
+              <IconButton onClick={clear}>
+                <CloseIcon />
+              </IconButton>
+            </div>
+
+            {renderLocation(address)}
+          </section>
+        )
+      )}
+
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        open={Boolean(snackbar.message)}
+        autoHideDuration={6000}
+        onClose={closeSnackbar}
+        action={
+          <IconButton onClick={closeSnackbar}>
+            <CloseIcon />
+          </IconButton>
+        }
+      >
+        <Alert onClose={closeSnackbar} severity={snackbar.severity} variant="filled" elevation={6}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
